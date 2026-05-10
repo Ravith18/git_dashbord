@@ -8,7 +8,7 @@ require_once __DIR__ . "/db.php";
 
 try {
     $stmt = $pdo->query("
-        // to be filled
+        // this is from the master branch
     ");
 
     echo json_encode($stmt->fetchAll());
