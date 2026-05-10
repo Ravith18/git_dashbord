@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TSB — XAUUSD Discipline Journal</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="app">
+
+<!-- ─── TOP NAV ─── -->
+<nav class="topnav">
+  <div class="nav-logo">Dashboard<span>⬡</span></div>
+  <div class="nav-subtitle">XXX</div>
+  <div class="nav-tabs">
+    <div class="nav-tab on"   onclick="goPage('journal',this)">Journal</div>
+    <div class="nav-tab"      onclick="goPage('discipline',this)">Discipline</div>
+    <div class="nav-tab"      onclick="goPage('dashboard',this)">Dashboard</div>
+    <div class="nav-tab"      onclick="goPage('accounts',this)">Accounts</div>
+    <div class="nav-tab"      onclick="goPage('leakmap',this)">Leak Map</div>
+  </div>
+  <div class="nav-spacer"></div>
+  <div class="nav-actions">
+    <button class="btn gold" onclick="openPreSession()">+ New Session Day</button>
+    <button class="btn"      onclick="show('mAcc')">+ Account</button>
+  </div>
+</nav>
+
+<!-- ─── STATUS BAR ─── -->
+<div class="status-bar">
+  <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--t3)">Strategy:</span>
+  <span class="chip"><span class="dot gold"></span>SMC · BOS/CHoCH + OB/FVG</span>
+  <span class="chip"><span class="dot gold"></span>NY Open &amp; Overlap</span>
+  <span class="chip"><span class="dot gold"></span>4H/1H → 5M/1M</span>
+  <span class="chip"><span class="dot"></span>1% Risk · 1:2 RR</span>
+  <span class="chip"><span class="dot off"></span>Sessions: <span id="tbCount" style="font-weight:700;margin-left:3px">0</span></span>
+</div>
+
+<div class="content-wrap">
+
+<!-- ══════════════════════════════════
+     JOURNAL PAGE — Session Day Cards
+══════════════════════════════════ -->
+<div class="page on" id="page-journal">
+  <div class="journal-toolbar">
+    <div class="journal-toolbar-left">
+      <h2>Trading Journal</h2>
+      <p>Each card = one trading day. Tap to expand, then log each trade inside.</p>
+    </div>
+    <button class="btn gold" onclick="openPreSession()">+ New Session Day</button>
+  </div>
+  <!-- ── REVIEW SNAPSHOT ── -->
+  <div class="rs-wrap">
+    <div class="rs-left">
+      <div class="rs-title">Review Snapshot</div>
+      <div class="rs-badges">
+        <span class="rs-badge pend"    id="rs-pending">0 pending</span>
+        <span class="rs-badge revd"    id="rs-reviewed">0 reviewed</span>
+        <span class="rs-badge neutral" id="rs-plan">Followed plan 0%</span>
+        <span class="rs-badge mistake" id="rs-mistake">Top mistake No mistakes tagged</span>
+        <span class="rs-badge closed"  id="rs-closed">All closed trades</span>
+      </div>
+    </div>
+    <div class="rs-divider"></div>
+    <div class="rs-stats">
+      <div class="rs-stat"><div class="rs-stat-val" id="rs-pnl" style="color:var(--t2)">$0.00</div><div class="rs-stat-lbl">NET P/L</div></div>
+      <div class="rs-stat"><div class="rs-stat-val neutral" id="rs-trades">0</div><div class="rs-stat-lbl">TRADES</div></div>
+      <div class="rs-stat"><div class="rs-stat-val green"   id="rs-winners">0</div><div class="rs-stat-lbl">WINNERS</div></div>
+      <div class="rs-stat"><div class="rs-stat-val red"     id="rs-losers">0</div><div class="rs-stat-lbl">LOSERS</div></div>
+      <div class="rs-stat"><div class="rs-stat-val neutral" id="rs-wr">0.0%</div><div class="rs-stat-lbl">WIN RATE</div></div>
+    </div>
+    <div class="rs-right">
+      <button class="rs-nextbtn" onclick="nextToReview()">▷ Next To Review</button>
+      <button class="rs-aibtn"   onclick="openAICoach()">+ AI Coach</button>
+    </div>
+  </div>
+
+  <div class="sessions-grid" id="sessionsGrid">
+    <div class="empty-sessions">
+      <div class="empty-sessions-icon">📅</div>
+      <div class="empty-sessions-title">No session days yet</div>
+      <div class="empty-sessions-sub">Tap "+ New Session Day" to plan today's XAUUSD session,<br>then log each trade inside it.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     DISCIPLINE PAGE
+══════════════════════════════════ -->
+<div class="page" id="page-discipline">
+  <div class="page-head"><h1>⬡ Discipline Center</h1><p>Weekly adherence, rule-by-rule breakdown, and XAUUSD-only filters.</p></div>
+
+  <div class="gold-filters-banner">
+    <div class="gfb-head"><span style="font-size:17px">🔶</span><div class="gfb-title">Your 3 Gold-Only Filters</div></div>
+    <div class="gfb-filters">
+      <div class="gf-card"><div class="gf-num">Filter 1</div><div class="gf-title">Kill Zone Gate</div><div class="gf-desc">Entry inside NY Open (8:30–9:30 AM ET) or Overlap (8–10 AM ET). Late entries = traps.</div></div>
+      <div class="gf-card"><div class="gf-num">Filter 2</div><div class="gf-title">Asian Range Swept</div><div class="gf-desc">Asian session high/low must be swept first. Un-swept range = you're entering before the hunt.</div></div>
+      <div class="gf-card"><div class="gf-num">Filter 3</div><div class="gf-title">Fresh OB/FVG Only</div><div class="gf-desc">OB or FVG must be unmitigated. Gold respects zones once — touched = trap on second entry.</div></div>
+    </div>
+  </div>
+
+  <div class="disc-hero">
+    <div class="disc-hero-top">
+      <div class="disc-hero-left"><h2>Weekly Discipline Score</h2><p>Based on last 7 days of logged trades</p></div>
+      <div class="score-ring">
+        <div class="score-circle" id="weekScoreCircle"><div class="score-num" id="weekScoreNum">—</div><div class="score-sub">/ 100</div></div>
+        <div class="week-lbl" id="weekScoreLbl">No trades this week</div>
+      </div>
+    </div>
+    <div class="disc-metrics">
+      <div class="dm"><div class="dm-lbl">Trades Logged</div><div class="dm-val gold" id="dm-count">0</div></div>
+      <div class="dm"><div class="dm-lbl">Rules Followed</div><div class="dm-val pos" id="dm-followed">—</div></div>
+      <div class="dm"><div class="dm-lbl">Win Rate</div><div class="dm-val" id="dm-wr">—</div></div>
+      <div class="dm"><div class="dm-lbl">Avg RR</div><div class="dm-val" id="dm-rr">—</div></div>
+    </div>
+  </div>
+
+  <div class="disc-grid">
+    <div class="disc-card">
+      <div class="dc-head">📊 Rule Adherence</div>
+      <div id="ruleBreakdown"><div class="empty" style="padding:24px 0"><div class="empty-sub">Log trades to see rule breakdown.</div></div></div>
+    </div>
+    <div class="disc-card">
+      <div class="dc-head">📅 Weekly Score History</div>
+      <div id="weeklyHistory"><div class="empty" style="padding:24px 0"><div class="empty-sub">History appears after your first week.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     DASHBOARD
+══════════════════════════════════ -->
+<div class="page" id="page-dashboard">
+  <div class="page-head"><h1>Dashboard</h1><p>Performance analytics across all trades.</p></div>
+  <div class="d-stats">
+    <div class="d-stat"><div class="d-stat-lbl">Total P&amp;L</div><div class="d-stat-val" id="ds-pnl">$0</div></div>
+    <div class="d-stat"><div class="d-stat-lbl">Win Rate</div><div class="d-stat-val" id="ds-wr">—</div></div>
+    <div class="d-stat"><div class="d-stat-lbl">Avg R:R</div><div class="d-stat-val" id="ds-rr">—</div></div>
+    <div class="d-stat"><div class="d-stat-lbl">Best Trade</div><div class="d-stat-val pos" id="ds-best">—</div></div>
+    <div class="d-stat"><div class="d-stat-lbl">Avg Discipline</div><div class="d-stat-val gold" id="ds-disc">—</div></div>
+  </div>
+  <div class="d-charts">
+    <div class="d-chart-card"><div class="d-chart-title">Cumulative P&L</div><canvas id="cPnl" height="150" style="width:100%"></canvas></div>
+    <div class="d-chart-card"><div class="d-chart-title">Win / Loss</div><canvas id="cWL" height="150" style="width:100%"></canvas></div>
+    <div class="d-chart-card"><div class="d-chart-title">Trades by Symbol</div><canvas id="cSym" height="150" style="width:100%"></canvas></div>
+    <div class="d-chart-card"><div class="d-chart-title">Long vs Short</div><canvas id="cSide" height="150" style="width:100%"></canvas></div>
+  </div>
+  <div class="mysql-panel">
+    <div class="mysql-head">
+      <div class="mysql-title">MySQL Trades Data Table</div>
+      <div>
+        <span id="mysqlStatus" class="mysql-status">Waiting for connection…</span>
+        <button class="btn sm" onclick="loadMySqlTrades()" style="margin-left:8px">Refresh</button>
+      </div>
+    </div>
+    <div class="mysql-table-wrap">
+      <table class="mysql-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Trade Date</th>
+            <th>Symbol</th>
+            <th>Side</th>
+            <th>Entry</th>
+            <th>Exit</th>
+            <th>P&amp;L</th>
+            <th>R:R</th>
+            <th>Session</th>
+          </tr>
+        </thead>
+        <tbody id="mysqlTradesBody">
+          <tr><td colspan="9" class="mysql-empty">No rows yet. Configure your MySQL API and click Refresh.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     ACCOUNTS
+══════════════════════════════════ -->
+<div class="page" id="page-accounts">
+  <div class="page-head"><h1>Accounts</h1><p>Manage accounts and prop firm challenge tracking.</p></div>
+  <div class="acc-page-grid" id="accPageGrid">
+    <div class="empty"><div class="empty-icon">🏦</div><div class="empty-title">No accounts yet</div><div class="empty-sub">Add an account from the top nav.</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     LEAK MAP
+══════════════════════════════════ -->
+<div class="page" id="page-leakmap">
+  <div class="page-head"><h1>Leak Map</h1><p>Where you're bleeding edge — by side, session, and rule.</p></div>
+  <div id="leakContent"><div class="empty"><div class="empty-icon">🔍</div><div class="empty-title">Not enough data</div><div class="empty-sub">Log at least 3 trades first.</div></div></div>
+</div>
+
+</div><!-- /content-wrap -->
+
+
+<!-- ════════════════════════════════════════════
+     MODAL 1: PRE-SESSION (one per day)
+════════════════════════════════════════════ -->
+<div class="overlay" id="mPreSession">
+<div class="modal" style="max-width:560px">
+  <div class="mhead">
+    <div class="mhead-left">
+      <div class="m-icon gold">📅</div>
+      <div>
+        <div class="mtitle" id="ps-title">New Session Day</div>
+        <div class="msub" id="ps-sub">Plan your bias and context before entering trades</div>
+      </div>
+    </div>
+    <div class="mhead-actions">
+      <button class="btn sm danger" id="ps-delBtn" style="display:none" onclick="deleteSession()">🗑 Delete</button>
+      <button class="mclose" onclick="hide('mPreSession')">✕</button>
+    </div>
+  </div>
+
+  <div class="mbody">
+    <!-- Date -->
+    <div class="mrow s1" style="margin-bottom:12px">
+      <div class="mg">
+        <div class="mlbl">Session Date <span class="mlbl-note">One card per day</span></div>
+        <div class="dt-pair">
+          <input type="date" class="minput" id="ps-date">
+          <span class="dt-now" onclick="setNow('ps-date')">TODAY</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Session tags -->
+    <div class="form-sep">Sessions Being Traded</div>
+    <div class="tagrow" id="ps-sessions" style="margin-bottom:14px">
+      <span class="stag" onclick="this.classList.toggle('on-gold');this.classList.toggle('on')">🌏 Asia</span>
+      <span class="stag" onclick="this.classList.toggle('on-gold');this.classList.toggle('on')">🇬🇧 London</span>
+      <span class="stag on on-gold" onclick="this.classList.toggle('on-gold');this.classList.toggle('on')">🗽 NY Open</span>
+      <span class="stag" onclick="this.classList.toggle('on-gold');this.classList.toggle('on')">🔀 NY–London Overlap</span>
+    </div>
+
+    <!-- HTF Bias -->
+    <div class="form-sep">HTF Bias (4H / Daily)</div>
+    <div class="mrow" style="margin-bottom:12px">
+      <div class="mg">
+        <div class="mlbl">Market Bias</div>
+        <div class="tgrp">
+          <button class="tbtn" id="ps-bull" onclick="setPsBias('BULLISH')">↑ Bullish</button>
+          <button class="tbtn" id="ps-bear" onclick="setPsBias('BEARISH')">↓ Bearish</button>
+          <button class="tbtn" id="ps-neut" onclick="setPsBias('NEUTRAL')">— Neutral</button>
+        </div>
+      </div>
+      <div class="mg">
+        <div class="mlbl">Market Condition</div>
+        <select class="minput" id="ps-cond">
+          <option value="">Select…</option>
+          <option>Trending</option>
+          <option>Ranging</option>
+          <option>High Volatility</option>
+          <option>News Day</option>
+          <option>NFP Week</option>
+          <option>Quiet / Low Vol</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Key levels -->
+    <div class="form-sep">Key Levels to Watch</div>
+    <div class="mrow" style="margin-bottom:12px">
+      <div class="mg"><div class="mlbl">Asian High</div><input type="number" class="minput" id="ps-asianhigh" placeholder="e.g. 2365.00" step="0.01"></div>
+      <div class="mg"><div class="mlbl">Asian Low</div><input type="number" class="minput" id="ps-asianlow" placeholder="e.g. 2350.00" step="0.01"></div>
+    </div>
+    <div class="mrow" style="margin-bottom:12px">
+      <div class="mg"><div class="mlbl">Key Support</div><input type="number" class="minput" id="ps-sup" placeholder="HTF support level" step="0.01"></div>
+      <div class="mg"><div class="mlbl">Key Resistance</div><input type="number" class="minput" id="ps-res" placeholder="HTF resistance level" step="0.01"></div>
+    </div>
+
+    <!-- Pre-session notes -->
+    <div class="form-sep">Session Plan &amp; Notes</div>
+    <div class="mg" style="margin-bottom:0">
+      <div class="mlbl">What's your plan? What are you watching for?</div>
+      <textarea class="mtextarea" id="ps-notes" placeholder="e.g. Bias is bullish on 4H. Watching for price to sweep Asian low at 2350, then look for CHoCH on 5M into OB around 2352 for NY Open long…" style="min-height:100px"></textarea>
+    </div>
+  </div>
+
+  <div class="mfoot">
+    <div class="mfoot-left" style="font-size:12px;color:var(--t3)">After saving, tap the card to log trades inside it.</div>
+    <div class="mfoot-right">
+      <button class="btn" onclick="hide('mPreSession')">Cancel</button>
+      <button class="btn gold" onclick="saveSession()">✓ Save Session Day</button>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     MODAL 2: TRADE JOURNAL (per trade, inside a session)
+════════════════════════════════════════════ -->
+<div class="overlay" id="mTrade">
+<div class="modal" style="max-width:620px">
+  <div class="mhead">
+    <div class="mhead-left">
+      <div class="m-icon gold" id="tm-icon">📊</div>
+      <div>
+        <div class="mtitle" id="tm-title">New Trade</div>
+        <div class="msub" id="tm-sub">Log this trade with discipline tracking</div>
+      </div>
+    </div>
+    <div class="mhead-actions">
+      <button class="btn sm danger" id="tm-delBtn" style="display:none" onclick="deleteTrade()">🗑</button>
+      <button class="mclose" onclick="hide('mTrade')">✕</button>
+    </div>
+  </div>
+
+  <div class="mbody">
+
+    <!-- ── DISCIPLINE CHECKLIST ── -->
+    <div class="disc-cl-wrap">
+      <div class="disc-cl-head">
+        <div class="disc-cl-title">⬡ Discipline Checklist <span style="font-size:10.5px;color:var(--t3);font-weight:400">— complete before saving</span></div>
+        <div class="disc-cl-prog" id="clProg">0 / 9</div>
+      </div>
+      <div class="disc-cl-body">
+        <div class="cl-group-label">📐 Bias &amp; Structure</div>
+        <div class="ci" onclick="toggleCI(this,'bias-htf')"><div class="ci-box" id="cb-bias-htf"></div><div class="ci-text"><div class="ci-label">4H/1H Bias Confirmed <span class="ci-badge core">CORE</span></div><div class="ci-sub">Checked 4H and 1H — clear bullish or bearish bias before entry.</div></div></div>
+        <div class="ci" onclick="toggleCI(this,'bos-choch')"><div class="ci-box" id="cb-bos-choch"></div><div class="ci-text"><div class="ci-label">BOS or CHoCH on LTF <span class="ci-badge core">CORE</span></div><div class="ci-sub">Break of Structure or Change of Character visible on 5M/1M entry chart.</div></div></div>
+        <div class="ci" onclick="toggleCI(this,'ob-fvg')"><div class="ci-box" id="cb-ob-fvg"></div><div class="ci-text"><div class="ci-label">OB/FVG Entry Zone Valid <span class="ci-badge core">CORE</span></div><div class="ci-sub">Entry at OB or FVG on 15M/5M aligned with HTF bias.</div></div></div>
+        <div class="cl-group-label">🔶 Gold-Only Filters</div>
+        <div class="ci" onclick="toggleCI(this,'killzone')"><div class="ci-box gold" id="cb-killzone"></div><div class="ci-text"><div class="ci-label">Kill Zone Entry <span class="ci-badge gold">GOLD</span></div><div class="ci-sub">Entry during NY Open (8:30–9:30 AM ET) or Overlap (8–10 AM ET).</div></div></div>
+        <div class="ci" onclick="toggleCI(this,'asian-sweep')"><div class="ci-box gold" id="cb-asian-sweep"></div><div class="ci-text"><div class="ci-label">Asian Range Swept <span class="ci-badge gold">GOLD</span></div><div class="ci-sub">Price has swept the Asian session high or low before my entry.</div></div></div>
+        <div class="ci" onclick="toggleCI(this,'fresh-ob')"><div class="ci-box gold" id="cb-fresh-ob"></div><div class="ci-text"><div class="ci-label">OB/FVG is Fresh (Unmitigated) <span class="ci-badge gold">GOLD</span></div><div class="ci-sub">The OB or FVG has NOT been previously touched or wicked into.</div></div></div>
+        <div class="cl-group-label">⚖️ Risk Management</div>
+        <div class="ci" onclick="toggleCI(this,'risk-1pct')"><div class="ci-box" id="cb-risk-1pct"></div><div class="ci-text"><div class="ci-label">Risk = 1% of Account <span class="ci-badge core">CORE</span></div><div class="ci-sub">Position sized so max loss on this trade equals exactly 1% of balance.</div></div></div>
+        <div class="ci" onclick="toggleCI(this,'sl-swing')"><div class="ci-box" id="cb-sl-swing"></div><div class="ci-text"><div class="ci-label">Hard SL at Swing H/L <span class="ci-badge core">CORE</span></div><div class="ci-sub">Hard stop placed above swing high (shorts) or below swing low (longs). No mental stops.</div></div></div>
+        <div class="ci" onclick="toggleCI(this,'rr-min')"><div class="ci-box" id="cb-rr-min"></div><div class="ci-text"><div class="ci-label">Min 1:2 RR Confirmed <span class="ci-badge core">CORE</span></div><div class="ci-sub">TP measured before entry. Reward is at least 2× the risk. No 1:1 trades.</div></div></div>
+      </div>
+    </div>
+    <div class="disc-gate" id="discGate">⚠️ Check all 9 items before saving to get a full discipline score.</div>
+
+    <!-- ══ TRADE ESSENTIALS ══ -->
+    <div class="form-sep">🔄 Trade Essentials</div>
+
+    <!-- Entry & Exit with time -->
+    <div class="mrow">
+      <div class="mg">
+        <div class="mlbl">Entry Date <span class="mlbl-note">Time optional</span></div>
+        <div class="dt-pair">
+          <input type="date" class="minput" id="t-ed">
+          <input type="time" class="minput" id="t-et" style="width:90px">
+          <span class="dt-now" onclick="setNowDateTime('t-ed','t-et')">NOW</span>
+        </div>
+      </div>
+      <div class="mg">
+        <div class="mlbl">Exit Date <span class="mlbl-note">Time optional</span></div>
+        <div class="dt-pair">
+          <input type="date" class="minput" id="t-xd">
+          <input type="time" class="minput" id="t-xt" style="width:90px">
+          <span class="dt-now" onclick="setNowDateTime('t-xd','t-xt')">NOW</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Symbol dropdown -->
+    <div class="mrow s1">
+      <div class="mg">
+        <div class="mlbl">Symbol</div>
+        <select class="minput" id="t-sym">
+          <option value="XAUUSD">XAUUSD — Gold</option>
+          <option value="EURUSD">EUR/USD</option>
+          <option value="NAS100">NAS100</option>
+          <option value="US30">US30</option>
+          <option value="GBPUSD">GBP/USD</option>
+          <option value="BTCUSD">BTC/USD</option>
+          <option value="OTHER">Other…</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Setup / strategy -->
+    <div class="mrow s1">
+      <div class="mg">
+        <div class="mlbl">Setup / Strategy</div>
+        <input type="text" class="minput" id="t-setup" placeholder="e.g. CHoCH + OB Retest, BOS + FVG Fill…">
+      </div>
+    </div>
+
+    <!-- Side + Account -->
+    <div class="mrow">
+      <div class="mg">
+        <div class="mlbl">Side</div>
+        <div class="tgrp">
+          <button class="tbtn" id="tbLong"  onclick="setSide('LONG')">↗ Long</button>
+          <button class="tbtn" id="tbShort" onclick="setSide('SHORT')">↘ Short</button>
+        </div>
+      </div>
+      <div class="mg">
+        <div class="mlbl">Account</div>
+        <select class="minput" id="t-acc"><option value="">Select account…</option></select>
+      </div>
+    </div>
+
+    <!-- Stop Loss + RR -->
+    <div class="mrow">
+      <div class="mg"><div class="mlbl">Stop Loss Price</div><input type="number" class="minput" id="t-sl" placeholder="e.g. 2340.50" step="0.01"></div>
+      <div class="mg"><div class="mlbl">R:R Achieved</div><input type="number" class="minput" id="t-rr" placeholder="e.g. 2.10" step="0.01"></div>
+    </div>
+
+    <!-- P&L -->
+    <div class="mg" style="margin-bottom:10px">
+      <div class="mlbl" style="display:flex;justify-content:space-between"><span>P &amp; L</span><span class="auto-tag" id="autoTag" style="display:none">auto-calc</span></div>
+      <div class="pnl-box">
+        <span style="color:var(--t3);font-size:15px">$</span>
+        <input type="number" class="pnl-input" id="t-pnl" placeholder="0.00" step="0.01" oninput="colorPnl()">
+      </div>
+      <div class="calc-preview" id="calcPreview" style="display:none">
+        <div class="formula" id="calcFormula"></div>
+        <div class="result" id="calcResult"></div>
+      </div>
+    </div>
+
+    <!-- Execution Details (collapsible) -->
+    <details style="margin-bottom:12px">
+      <summary style="cursor:pointer;font-size:11.5px;font-weight:600;color:var(--t2);padding:9px 12px;background:var(--bg3);border:1px solid var(--b1);border-radius:6px;list-style:none;display:flex;align-items:center;justify-content:space-between;">
+        <span>📊 Execution Details <span style="font-weight:400;color:var(--t3)">— Optional · auto-calc &amp; multiple fills</span></span>
+        <span style="color:var(--t3)">▾</span>
+      </summary>
+      <div style="border:1px solid var(--b1);border-top:none;border-radius:0 0 6px 6px;padding:12px;background:var(--bg3)">
+        <div id="exec-summary" style="display:none;font-size:11.5px;color:var(--t3);font-family:var(--mono);margin-bottom:8px;padding:8px 10px;background:var(--bg4);border-radius:5px;">
+          Avg Entry: <strong id="es-ep">—</strong> · Avg Exit: <strong id="es-xp">—</strong> · In: <strong id="es-en">—</strong> · Out: <strong id="es-ex">—</strong>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
+          <span style="font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);font-weight:600">Executions</span>
+          <div style="display:flex;gap:5px">
+            <button class="btn sm" style="color:var(--g);border-color:rgba(29,233,182,.25)" onclick="addExec('entry')">+ Entry</button>
+            <button class="btn sm" style="color:var(--r);border-color:rgba(255,61,107,.25)" onclick="addExec('exit')">+ Exit</button>
+          </div>
+        </div>
+        <div id="execList"></div>
+        <div class="mrow" style="margin-top:10px">
+          <div class="mg"><div class="mlbl">Fees</div><input type="number" class="minput" id="t-fees" placeholder="0.00" oninput="autoCalc()"></div>
+          <div class="mg"><div class="mlbl">Swap / Rollover</div><input type="number" class="minput" id="t-swap" placeholder="Optional"></div>
+        </div>
+      </div>
+    </details>
+
+    <!-- ══ NOTES & EVIDENCE ══ -->
+    <div class="form-sep">📝 Notes &amp; Evidence</div>
+    <div style="font-size:11.5px;color:var(--t3);margin-bottom:9px">Capture the lesson, screenshot, or setup nuance before you move on.</div>
+
+    <div class="mg" style="margin-bottom:12px">
+      <div class="mlbl">What did you do well? What could improve?</div>
+      <textarea class="mtextarea" id="t-notes" placeholder="e.g. Waited for the Asian low sweep at 2348, CHoCH appeared on 5M, entered on OB retest. Should have sized in faster at the OB touch…" style="min-height:90px"></textarea>
+    </div>
+
+    <!-- Screenshots -->
+    <div style="font-size:11.5px;font-weight:600;color:var(--t2);margin-bottom:8px">📸 Screenshots</div>
+    <div class="mrow">
+      <div class="mg">
+        <div class="mlbl">LTF Screenshot <span class="mlbl-note">(5M/1M entry)</span></div>
+        <div class="dz" id="dz-ltf" onclick="pickFile('ltf-f')" ondragover="dzDrag(event,this)" ondragleave="dzLeave(this)" ondrop="dzDrop(event,'ltf-f',this)">
+          <div class="dz-icon">☁</div>
+          <div class="dz-txt" id="ltf-lbl">Drop or click to upload LTF screenshot</div>
+          <input type="file" id="ltf-f" accept="image/*" style="display:none" onchange="filePicked('ltf-f','ltf-lbl','ltf-preview')">
+          <img id="ltf-preview" class="dz-preview" style="display:none">
+        </div>
+      </div>
+      <div class="mg">
+        <div class="mlbl">HTF Screenshot <span class="mlbl-note">(4H/1H bias)</span></div>
+        <div class="dz" id="dz-htf" onclick="pickFile('htf-f')" ondragover="dzDrag(event,this)" ondragleave="dzLeave(this)" ondrop="dzDrop(event,'htf-f',this)">
+          <div class="dz-icon">☁</div>
+          <div class="dz-txt" id="htf-lbl">Drop or click to upload HTF screenshot</div>
+          <input type="file" id="htf-f" accept="image/*" style="display:none" onchange="filePicked('htf-f','htf-lbl','htf-preview')">
+          <img id="htf-preview" class="dz-preview" style="display:none">
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /mbody -->
+
+  <div class="mfoot">
+    <div class="mfoot-left">
+      <button class="btn danger" id="tm-delBtn2" style="display:none" onclick="deleteTrade()">🗑 Delete</button>
+      <span style="font-size:11.5px;color:var(--t3)">Discipline: <span id="footDiscNum" style="font-family:var(--mono);font-weight:700;color:var(--gold)">0/9</span></span>
+    </div>
+    <div class="mfoot-right">
+      <button class="btn" onclick="hide('mTrade')">Cancel</button>
+      <button class="btn gold" onclick="saveTrade()" id="tm-saveBtn">✓ Save Trade</button>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- ════════ ACCOUNT MODAL ════════ -->
+<div class="overlay" id="mAcc">
+<div class="modal" style="max-width:480px">
+  <div class="mhead">
+    <div class="mhead-left"><div class="m-icon">🏦</div><div><div class="mtitle">New Account</div><div class="msub">Set mode, type, and balance.</div></div></div>
+    <button class="mclose" onclick="hide('mAcc')">✕</button>
+  </div>
+  <div class="mbody">
+    <div class="mg" style="margin-bottom:12px"><div class="mlbl">Account Name</div><input type="text" class="minput" id="a-name" placeholder="e.g. FTMO Phase 1, Personal…"></div>
+    <div style="margin-bottom:12px">
+      <div class="mlbl" style="margin-bottom:6px">Trading Mode</div>
+      <div class="tgrp">
+        <button class="tbtn on-sel" id="m-live" onclick="setAccMode('Live')">⚡ Live</button>
+        <button class="tbtn" id="m-demo" onclick="setAccMode('Demo')">🖥 Demo</button>
+        <button class="tbtn" id="m-bt"   onclick="setAccMode('Backtest')">🧪 Backtest</button>
+      </div>
+    </div>
+    <div style="margin-bottom:12px">
+      <div class="mlbl" style="margin-bottom:6px">Account Type</div>
+      <div class="atype-grid">
+        <div class="atype on" id="at-personal" onclick="setAccType('Personal')"><div class="atype-name">👤 Personal</div><div class="atype-sub">Regular account</div></div>
+        <div class="atype" id="at-prop" onclick="setAccType('Prop Firm')"><div class="atype-name">🏆 Prop Firm</div><div class="atype-sub">Challenge rules</div></div>
+      </div>
+    </div>
+    <div id="propFields" style="display:none;margin-bottom:12px">
+      <div class="mrow">
+        <div class="mg"><div class="mlbl">Daily DD Limit ($)</div><input type="number" class="minput" id="a-ddd" placeholder="250"></div>
+        <div class="mg"><div class="mlbl">Max Total DD ($)</div><input type="number" class="minput" id="a-mdd" placeholder="500"></div>
+      </div>
+    </div>
+    <div class="mrow">
+      <div class="mg"><div class="mlbl">Starting Balance</div><input type="number" class="minput" id="a-bal" placeholder="10000"></div>
+      <div class="mg"><div class="mlbl">Target Balance</div><input type="number" class="minput" id="a-tgt" placeholder="11000"></div>
+    </div>
+  </div>
+  <div class="mfoot"><div></div><div class="mfoot-right"><button class="btn" onclick="hide('mAcc')">Cancel</button><button class="btn g" onclick="saveAcc()">✓ Save</button></div></div>
+</div>
+</div>
+
+<!-- ════════ AI COACH MODAL ════════ -->
+<div class="overlay" id="mAICoach">
+<div class="modal" style="max-width:520px">
+  <div class="mhead">
+    <div class="mhead-left">
+      <div class="m-icon" style="background:var(--g3);border-color:rgba(29,233,182,.25);color:var(--g)">⬡</div>
+      <div><div class="mtitle">AI Coach</div><div class="msub">Personalized insights based on your trade data</div></div>
+    </div>
+    <button class="mclose" onclick="hide('mAICoach')">✕</button>
+  </div>
+  <div class="mbody">
+    <div id="aiCoachContent" style="min-height:120px"></div>
+  </div>
+  <div class="mfoot">
+    <div style="font-size:11.5px;color:var(--t3)">Based on your last <span id="aiTradeCount">0</span> logged trades</div>
+    <div class="mfoot-right">
+      <button class="btn" onclick="hide('mAICoach')">Close</button>
+      <button class="btn g" onclick="renderAICoach()">↻ Refresh</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════ JS ══════════════ -->
+<script>
+const CHECKS=['bias-htf','bos-choch','ob-fvg','killzone','asian-sweep','fresh-ob','risk-1pct','sl-swing','rr-min'];
+const RULE_LABELS={'bias-htf':'4H/1H Bias','bos-choch':'BOS/CHoCH LTF','ob-fvg':'OB/FVG Valid','killzone':'Kill Zone','asian-sweep':'Asian Swept','fresh-ob':'Fresh OB/FVG','risk-1pct':'1% Risk','sl-swing':'Swing SL','rr-min':'1:2 RR Min'};
+
+let D={
+  sessions: JSON.parse(localStorage.getItem('tsb6_s')||'[]'),
+  accs:     JSON.parse(localStorage.getItem('tsb6_a')||'[]'),
+  // ephemeral state
+  editSessionId: null,
+  psBias: '',
+  editTradeId: null,
+  tradeSessionId: null,
+  side: '',
+  execs: [],
+  ltfImage: null,
+  htfImage: null,
+  checks: {},
+};
+
+function save(){
+  localStorage.setItem('tsb6_s', JSON.stringify(D.sessions));
+  localStorage.setItem('tsb6_a', JSON.stringify(D.accs));
+}
+
+/* ─── helpers ─── */
+function isoToday(){ return new Date().toISOString().split('T')[0]; }
+function fmtDate(d){ if(!d) return ''; return new Date(d+'T00:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}); }
+function fmtMonth(d){ if(!d) return ''; return new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short'}).toUpperCase(); }
+function fmtDay(d){ if(!d) return ''; return new Date(d+'T00:00:00').getDate(); }
+function fmtDow(d){ if(!d) return ''; return new Date(d+'T00:00:00').toLocaleDateString('en-US',{weekday:'short'}).toUpperCase(); }
+function fmtPnl(v){ const a=Math.abs(v).toFixed(2); return (v>=0?'+':'-')+'$'+a; }
+function nowTime(){ const n=new Date(); return n.toTimeString().slice(0,5); }
+function allTrades(){ return D.sessions.flatMap(s=>s.trades||[]); }
+const MYSQL_API_ENDPOINT = 'api/get_trades.php';
+
+async function loadMySqlTrades(){
+  const statusEl = document.getElementById('mysqlStatus');
+  const tbody = document.getElementById('mysqlTradesBody');
+  if(!statusEl || !tbody) return;
+  statusEl.textContent = 'Loading from MySQL...';
+  statusEl.className = 'mysql-status';
+  tbody.innerHTML = '<tr><td colspan="9" class="mysql-empty">Loading data...</td></tr>';
+  try{
+    const res = await fetch(MYSQL_API_ENDPOINT, { cache:'no-store' });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const rows = await res.json();
+    if(!Array.isArray(rows)) throw new Error('Invalid API response');
+    if(!rows.length){
+      tbody.innerHTML = '<tr><td colspan="9" class="mysql-empty">Connected to MySQL, but no trades found.</td></tr>';
+      statusEl.textContent = 'Connected';
+      statusEl.className = 'mysql-status ok';
+      return;
+    }
+    tbody.innerHTML = rows.map(r=>`<tr>
+      <td>${r.id ?? ''}</td>
+      <td>${r.trade_date ?? ''}</td>
+      <td>${r.symbol ?? ''}</td>
+      <td>${r.side ?? ''}</td>
+      <td>${r.entry_price ?? ''}</td>
+      <td>${r.exit_price ?? ''}</td>
+      <td>${r.pnl ?? ''}</td>
+      <td>${r.rr ?? ''}</td>
+      <td>${r.session_name ?? ''}</td>
+    </tr>`).join('');
+    statusEl.textContent = 'Connected';
+    statusEl.className = 'mysql-status ok';
+  }catch(err){
+    console.error('MySQL load failed:', err);
+    statusEl.textContent = 'Connection failed';
+    statusEl.className = 'mysql-status err';
+    tbody.innerHTML = '<tr><td colspan="9" class="mysql-empty">Could not load data from MySQL API.</td></tr>';
+  }
+}
+
+/* ─── toast ─── */
+function toast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show '+type;
+  setTimeout(()=>t.className='toast',2800);
+}
+
+/* ─── page nav ─── */
+function goPage(name,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('page-'+name).classList.add('on');
+  el.classList.add('on');
+  if(name==='dashboard')  renderDash();
+  if(name==='leakmap')    renderLeakMap();
+  if(name==='accounts')   renderAccPage();
+  if(name==='discipline') renderDisc();
+}
+
+/* ─── overlays ─── */
+function show(id){ document.getElementById(id).classList.add('on'); }
+function hide(id){ document.getElementById(id).classList.remove('on'); }
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('on'); }));
+
+/* ════════════════════════════════════
+   PRE-SESSION MODAL
+════════════════════════════════════ */
+function openPreSession(sessionId){
+  D.editSessionId = sessionId || null;
+  const sess = sessionId ? D.sessions.find(s=>s.id===sessionId) : null;
+
+  document.getElementById('ps-title').textContent = sess ? 'Edit Session Day' : 'New Session Day';
+  document.getElementById('ps-sub').textContent = sess ? fmtDate(sess.date) : 'Plan your bias and context before entering trades';
+  document.getElementById('ps-delBtn').style.display = sess ? 'flex' : 'none';
+  document.getElementById('ps-date').value = sess ? sess.date : isoToday();
+
+  // reset session tags
+  document.querySelectorAll('#ps-sessions .stag').forEach(t=>{
+    t.classList.remove('on','on-gold');
+  });
+  if(sess){
+    (sess.sessions||[]).forEach(s=>{
+      document.querySelectorAll('#ps-sessions .stag').forEach(t=>{
+        if(t.textContent.includes(s)){ t.classList.add('on','on-gold'); }
+      });
+    });
+    setPsBias(sess.bias||'');
+    document.getElementById('ps-cond').value = sess.condition||'';
+    document.getElementById('ps-asianhigh').value = sess.asianHigh||'';
+    document.getElementById('ps-asianlow').value  = sess.asianLow||'';
+    document.getElementById('ps-sup').value  = sess.support||'';
+    document.getElementById('ps-res').value  = sess.resistance||'';
+    document.getElementById('ps-notes').value = sess.notes||'';
+  } else {
+    setPsBias('');
+    ['ps-cond','ps-asianhigh','ps-asianlow','ps-sup','ps-res'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('ps-notes').value='';
+    // default NY Open on
+    document.querySelectorAll('#ps-sessions .stag').forEach(t=>{
+      if(t.textContent.includes('NY Open')){ t.classList.add('on','on-gold'); }
+    });
+  }
+  show('mPreSession');
+}
+
+function setPsBias(b){
+  D.psBias = b;
+  ['bull','bear','neut'].forEach(k=>{
+    document.getElementById('ps-'+k).className='tbtn'+({BULLISH:'bull',BEARISH:'bear',NEUTRAL:'neut'}[b]===k?' on-sel':'');
+  });
+}
+
+function saveSession(){
+  const date = document.getElementById('ps-date').value;
+  if(!date){ toast('Pick a date first','err'); return; }
+  const sessions = [...document.querySelectorAll('#ps-sessions .stag.on')].map(t=>t.textContent.trim());
+  const payload = {
+    date, sessions,
+    bias: D.psBias,
+    condition: document.getElementById('ps-cond').value,
+    asianHigh: +document.getElementById('ps-asianhigh').value||null,
+    asianLow:  +document.getElementById('ps-asianlow').value||null,
+    support:   +document.getElementById('ps-sup').value||null,
+    resistance:+document.getElementById('ps-res').value||null,
+    notes: document.getElementById('ps-notes').value.trim(),
+  };
+  if(D.editSessionId){
+    const idx=D.sessions.findIndex(s=>s.id===D.editSessionId);
+    if(idx>-1) D.sessions[idx]={...D.sessions[idx],...payload};
+  } else {
+    // check if date already exists
+    const existing=D.sessions.find(s=>s.date===date);
+    if(existing){ toast('Session for this date already exists. Tap the card to edit it.','err'); return; }
+    D.sessions.unshift({id:Date.now(), trades:[], createdAt:new Date().toISOString(), ...payload});
+  }
+  save(); hide('mPreSession'); renderJournal();
+  toast(D.editSessionId ? '✓ Session updated' : '✓ Session day created — now log your trades!');
+}
+
+function deleteSession(){
+  if(!D.editSessionId) return;
+  const sess=D.sessions.find(s=>s.id===D.editSessionId);
+  const tradeCount=(sess?.trades||[]).length;
+  if(!confirm(`Delete this session day${tradeCount?' and its '+tradeCount+' trade(s)':''} ?`)) return;
+  D.sessions=D.sessions.filter(s=>s.id!==D.editSessionId);
+  save(); hide('mPreSession'); renderJournal();
+  toast('Session deleted','err');
+}
+
+/* ─── toggle session card open/close ─── */
+function toggleSessionCard(id){
+  const body=document.getElementById('sdc-body-'+id);
+  const chevron=document.getElementById('sdc-chev-'+id);
+  const card=document.getElementById('sdc-'+id);
+  if(body.classList.contains('open')){
+    body.classList.remove('open');
+    chevron.classList.remove('open');
+    card.classList.remove('open');
+  } else {
+    body.classList.add('open');
+    chevron.classList.add('open');
+    card.classList.add('open');
+  }
+}
+
+/* ════════════════════════════════════
+   TRADE MODAL
+════════════════════════════════════ */
+function openTradeModal(sessionId, tradeId){
+  D.tradeSessionId = sessionId;
+  D.editTradeId = tradeId || null;
+  D.execs = []; D.side = ''; D.ltfImage = null; D.htfImage = null;
+  resetChecks(); resetTradeForm();
+
+  const sess = D.sessions.find(s=>s.id===sessionId);
+  const trade = tradeId ? (sess?.trades||[]).find(t=>t.id===tradeId) : null;
+
+  if(trade){
+    document.getElementById('tm-icon').textContent = trade.pnl>=0 ? '📈' : '📉';
+    document.getElementById('tm-title').textContent = 'Edit Trade';
+    document.getElementById('tm-sub').textContent = (sess?fmtDate(sess.date):'')+' · Manual';
+    document.getElementById('tm-delBtn').style.display='flex';
+    document.getElementById('tm-delBtn2').style.display='flex';
+    document.getElementById('tm-saveBtn').textContent='✓ Save Changes';
+    // fill form
+    document.getElementById('t-ed').value = trade.entryDate||'';
+    document.getElementById('t-et').value = trade.entryTime||'';
+    document.getElementById('t-xd').value = trade.exitDate||'';
+    document.getElementById('t-xt').value = trade.exitTime||'';
+    document.getElementById('t-sym').value = trade.symbol||'XAUUSD';
+    document.getElementById('t-setup').value = trade.setup||'';
+    document.getElementById('t-sl').value = trade.stopLoss||'';
+    document.getElementById('t-rr').value = trade.rr||'';
+    document.getElementById('t-pnl').value = trade.pnl||'';
+    document.getElementById('t-fees').value = trade.fees||'';
+    document.getElementById('t-swap').value = trade.swap||'';
+    document.getElementById('t-notes').value = trade.notes||'';
+    document.getElementById('t-acc').value = trade.accountId||'';
+    D.side = trade.side||'';
+    document.getElementById('tbLong').className='tbtn'+(D.side==='LONG'?' on-long':'');
+    document.getElementById('tbShort').className='tbtn'+(D.side==='SHORT'?' on-short':'');
+    D.execs = (trade.executions||[]).map(e=>({...e}));
+    restoreChecks(trade.checks||{});
+    // images
+    if(trade.ltfImage){ showImgPreview('ltf-preview','ltf-lbl',trade.ltfImage); D.ltfImage=trade.ltfImage; }
+    if(trade.htfImage){ showImgPreview('htf-preview','htf-lbl',trade.htfImage); D.htfImage=trade.htfImage; }
+    colorPnl();
+  } else {
+    document.getElementById('tm-icon').textContent = '📊';
+    document.getElementById('tm-title').textContent = 'New Trade';
+    document.getElementById('tm-sub').textContent = sess ? fmtDate(sess.date)+' · '+( (sess.sessions||[]).join(' & ')||'Journal') : 'Log trade';
+    document.getElementById('tm-delBtn').style.display='none';
+    document.getElementById('tm-delBtn2').style.display='none';
+    document.getElementById('tm-saveBtn').textContent='✓ Save Trade';
+    document.getElementById('t-ed').value = sess?.date||isoToday();
+  }
+  popAccSel(); renderExecList(); show('mTrade');
+}
+
+function saveTrade(){
+  const sym = document.getElementById('t-sym').value;
+  if(!sym){ toast('Select a symbol','err'); return; }
+  const pnl = +document.getElementById('t-pnl').value||0;
+  const checksSnap={};
+  CHECKS.forEach(k=>checksSnap[k]=!!D.checks[k]);
+  const discScore=Math.round(CHECKS.filter(k=>D.checks[k]).length/CHECKS.length*100);
+
+  const payload={
+    symbol:sym,
+    setup:document.getElementById('t-setup').value.trim(),
+    side:D.side,
+    accountId:document.getElementById('t-acc').value,
+    entryDate:document.getElementById('t-ed').value,
+    entryTime:document.getElementById('t-et').value,
+    exitDate:document.getElementById('t-xd').value,
+    exitTime:document.getElementById('t-xt').value,
+    stopLoss:+document.getElementById('t-sl').value||null,
+    rr:+document.getElementById('t-rr').value||null,
+    pnl, fees:+document.getElementById('t-fees').value||0,
+    swap:+document.getElementById('t-swap').value||0,
+    notes:document.getElementById('t-notes').value.trim(),
+    executions:[...D.execs],
+    checks:checksSnap, discScore,
+    ltfImage:D.ltfImage, htfImage:D.htfImage,
+  };
+
+  const sess=D.sessions.find(s=>s.id===D.tradeSessionId);
+  if(!sess){ toast('Session not found','err'); return; }
+  if(!sess.trades) sess.trades=[];
+
+  if(D.editTradeId){
+    const idx=sess.trades.findIndex(t=>t.id===D.editTradeId);
+    if(idx>-1) sess.trades[idx]={...sess.trades[idx],...payload};
+  } else {
+    sess.trades.push({id:Date.now(), createdAt:new Date().toISOString(), ...payload});
+  }
+  save(); hide('mTrade'); renderJournal();
+  toast(discScore===100?'✓ Trade saved — 100% Discipline! 🔥':`✓ Trade saved — Disc: ${discScore}%`);
+}
+
+function deleteTrade(){
+  const sess=D.sessions.find(s=>s.id===D.tradeSessionId);
+  if(!sess||!D.editTradeId) return;
+  if(!confirm('Delete this trade?')) return;
+  sess.trades=(sess.trades||[]).filter(t=>t.id!==D.editTradeId);
+  save(); hide('mTrade'); renderJournal();
+  toast('Trade deleted','err');
+}
+
+/* ════════════════════════════════════
+   RENDER JOURNAL  (Session Day Cards)
+════════════════════════════════════ */
+function renderJournal(){
+  renderReviewSnapshot();
+  const el=document.getElementById('sessionsGrid');
+  document.getElementById('tbCount').textContent=D.sessions.length;
+  if(!D.sessions.length){
+    el.innerHTML=`<div class="empty-sessions"><div class="empty-sessions-icon">📅</div><div class="empty-sessions-title">No session days yet</div><div class="empty-sessions-sub">Tap "+ New Session Day" to plan today's session,<br>then log each trade inside it.</div></div>`;
+    return;
+  }
+  const sorted=[...D.sessions].sort((a,b)=>b.date.localeCompare(a.date));
+  el.innerHTML=sorted.map(sess=>{
+    const trades=sess.trades||[];
+    const totalPnl=trades.reduce((s,t)=>s+t.pnl,0);
+    const wins=trades.filter(t=>t.pnl>0).length;
+    const scored=trades.filter(t=>t.checks);
+    const avgDisc=scored.length?Math.round(scored.reduce((s,t)=>s+t.discScore,0)/scored.length):null;
+    const biasEmoji={BULLISH:'↑',BEARISH:'↓',NEUTRAL:'→'}[sess.bias]||'';
+    const sessTagsHtml=(sess.sessions||[]).map(s=>{
+      const cls=s.includes('NY')?'ny':s.includes('London')?'london':'asia';
+      return `<span class="sdc-session-tag ${cls}">${s.replace('🌏','').replace('🇬🇧','').replace('🗽','').replace('🔀','').trim()}</span>`;
+    }).join('');
+    return `
+    <div class="session-day-card" id="sdc-${sess.id}">
+      <div class="sdc-header" onclick="toggleSessionCard(${sess.id})">
+        <div class="sdc-date-block">
+          <div class="sdc-month">${fmtMonth(sess.date)}</div>
+          <div class="sdc-day">${fmtDay(sess.date)}</div>
+          <div class="sdc-dow">${fmtDow(sess.date)}</div>
+        </div>
+        <div class="sdc-info">
+          <div class="sdc-session-tags">${sessTagsHtml||'<span style="font-size:11px;color:var(--t4)">No session tagged</span>'}</div>
+          <div class="sdc-bias" style="font-size:12px;color:var(--t3)">${biasEmoji?`<span style="color:${sess.bias==='BULLISH'?'var(--g)':'var(--r)'}">${biasEmoji} ${sess.bias}</span>`:''}${sess.condition?` · ${sess.condition}`:''}</div>
+        </div>
+        <div class="sdc-right">
+          <div class="sdc-stats">
+            <div class="sdc-stat">
+              <div class="sdc-stat-val ${totalPnl>=0?'pos':'neg'}">${trades.length?fmtPnl(totalPnl):'—'}</div>
+              <div class="sdc-stat-lbl">Day P&L</div>
+            </div>
+            <div class="sdc-divider"></div>
+            <div class="sdc-stat">
+              <div class="sdc-stat-val">${trades.length}</div>
+              <div class="sdc-stat-lbl">Trades</div>
+            </div>
+            <div class="sdc-divider"></div>
+            <div class="sdc-stat">
+              <div class="sdc-stat-val gold">${avgDisc!==null?avgDisc+'%':'—'}</div>
+              <div class="sdc-stat-lbl">Disc.</div>
+            </div>
+          </div>
+          <div class="sdc-chevron" id="sdc-chev-${sess.id}">▾</div>
+        </div>
+      </div>
+
+      <div class="sdc-body" id="sdc-body-${sess.id}">
+        ${sess.notes?`<div class="sdc-presession-strip">
+          <span class="sdc-ps-label">Plan</span>
+          <span class="sdc-ps-text">${sess.notes}</span>
+          <button class="sdc-ps-edit" onclick="event.stopPropagation();openPreSession(${sess.id})">Edit</button>
+        </div>`:''}
+
+        <div class="sdc-trades-list">
+          ${trades.length?trades.map((t,i)=>{
+            const discClass=t.discScore>=80?'hi':t.discScore>=50?'mid':'lo';
+            const revStyle = t.reviewed
+              ? 'background:rgba(29,233,182,.08);border-color:rgba(29,233,182,.2);color:var(--g);'
+              : 'background:rgba(245,158,11,.07);border-color:rgba(245,158,11,.18);color:var(--gold);';
+            const revLabel = t.reviewed ? '✓ Reviewed' : '○ Pending';
+            return `<div class="sdc-trade-row" onclick="openTradeModal(${sess.id},${t.id})">
+              <div class="str-num">${i+1}</div>
+              <div class="str-sym">${t.symbol||'—'}</div>
+              <div class="str-setup">${t.setup||'No setup tagged'}</div>
+              ${t.side?`<div class="str-side ${t.side==='LONG'?'long':'short'}">${t.side==='LONG'?'↗ L':'↘ S'}</div>`:'<div></div>'}
+              ${t.checks?`<div class="str-disc ${discClass}">⬡${t.discScore}%</div>`:'<div></div>'}
+              <div class="str-pnl ${t.pnl>=0?'pos':'neg'}">${fmtPnl(t.pnl)}</div>
+              <button onclick="markReviewed(${sess.id},${t.id},event)" style="font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:3px;border:1px solid;${revStyle}flex-shrink:0;cursor:pointer;transition:all .15s;">${revLabel}</button>
+            </div>`;
+          }).join(''):'<div style="text-align:center;padding:12px;font-size:12px;color:var(--t4)">No trades yet — tap below to log your first trade.</div>'}
+        </div>
+
+        <div class="sdc-add-trade" onclick="openTradeModal(${sess.id})">
+          <span style="font-size:15px">+</span> Log a Trade in This Session
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ════════════════════════════════════
+   DISCIPLINE PAGE
+════════════════════════════════════ */
+function renderDisc(){
+  const now=new Date();
+  const weekAgo=new Date(now); weekAgo.setDate(weekAgo.getDate()-7);
+  const wkISO=weekAgo.toISOString().split('T')[0];
+  const weekTrades=allTrades().filter(t=>t.entryDate&&t.entryDate>=wkISO);
+
+  if(weekTrades.length){
+    const scored=weekTrades.filter(t=>t.checks);
+    const avg=scored.length?Math.round(scored.reduce((s,t)=>s+t.discScore,0)/scored.length):0;
+    const circle=document.getElementById('weekScoreCircle');
+    document.getElementById('weekScoreNum').textContent=avg;
+    circle.className='score-circle '+(avg>=80?'hi':avg<50?'lo':'');
+    document.getElementById('weekScoreLbl').textContent=`${weekTrades.length} trade${weekTrades.length>1?'s':''} this week`;
+    const wins=weekTrades.filter(t=>t.pnl>0).length;
+    document.getElementById('dm-count').textContent=weekTrades.length;
+    document.getElementById('dm-followed').textContent=avg+'%';
+    document.getElementById('dm-wr').textContent=Math.round(wins/weekTrades.length*100)+'%';
+    const rrs=weekTrades.filter(t=>t.rr).map(t=>t.rr);
+    document.getElementById('dm-rr').textContent=rrs.length?(rrs.reduce((a,b)=>a+b,0)/rrs.length).toFixed(2)+'R':'—';
+  }
+
+  // rule breakdown
+  const allScored=allTrades().filter(t=>t.checks);
+  const rbEl=document.getElementById('ruleBreakdown');
+  if(allScored.length){
+    rbEl.innerHTML=CHECKS.map(k=>{
+      const pct=Math.round(allScored.filter(t=>t.checks[k]).length/allScored.length*100);
+      const color=pct>=80?'var(--g)':pct>=50?'var(--gold)':'var(--r)';
+      const isGold=['killzone','asian-sweep','fresh-ob'].includes(k);
+      return `<div class="rule-row">
+        <div class="rule-icon ${pct>=80?'pass':pct<50?'fail':'na'}">${pct>=80?'✓':pct<50?'✗':'~'}</div>
+        <div class="rule-text">${RULE_LABELS[k]}${isGold?' 🔶':''}</div>
+        <div class="rule-pct" style="color:${color}">${pct}%</div>
+      </div>`;
+    }).join('');
+  }
+
+  // weekly bars
+  const weekMap={};
+  allTrades().forEach(t=>{
+    if(!t.entryDate||!t.checks) return;
+    const d=new Date(t.entryDate+'T00:00:00');
+    const day=d.getDay();
+    const mon=new Date(d); mon.setDate(d.getDate()-(day===0?6:day-1));
+    const wk=mon.toISOString().split('T')[0];
+    if(!weekMap[wk]) weekMap[wk]=[];
+    weekMap[wk].push(t);
+  });
+  const wks=Object.keys(weekMap).sort().reverse().slice(0,8);
+  const whEl=document.getElementById('weeklyHistory');
+  if(wks.length){
+    whEl.innerHTML=wks.map(wk=>{
+      const wt=weekMap[wk];
+      const sc=wt.filter(t=>t.checks).map(t=>t.discScore);
+      const avg=sc.length?Math.round(sc.reduce((a,b)=>a+b,0)/sc.length):0;
+      const color=avg>=80?'var(--g)':avg>=50?'var(--gold)':'var(--r)';
+      const d=new Date(wk+'T00:00:00');
+      const lbl=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      return `<div class="week-bar-wrap">
+        <div class="week-bar-label"><span>Wk of ${lbl}</span><span style="color:${color};font-family:var(--mono);font-weight:700">${avg}%</span></div>
+        <div class="week-bar"><div class="week-bar-fill" style="width:${avg}%;background:${color}"></div></div>
+      </div>`;
+    }).join('');
+  }
+}
+
+/* ════════════════════════════════════
+   DISCIPLINE CHECKLIST (in trade modal)
+════════════════════════════════════ */
+function toggleCI(item,key){
+  D.checks[key]=!D.checks[key];
+  const box=document.getElementById('cb-'+key);
+  D.checks[key]?box.classList.add('on'):box.classList.remove('on');
+  updateClProg();
+}
+function updateClProg(){
+  const n=CHECKS.filter(k=>D.checks[k]).length;
+  document.getElementById('clProg').textContent=`${n} / ${CHECKS.length}`;
+  const pct=Math.round(n/CHECKS.length*100);
+  document.getElementById('footDiscNum').textContent=`${n}/${CHECKS.length}`;
+  document.getElementById('footDiscNum').style.color=pct>=80?'var(--g)':pct>=50?'var(--gold)':'var(--r)';
+}
+function resetChecks(){
+  CHECKS.forEach(k=>{ D.checks[k]=false; const b=document.getElementById('cb-'+k); if(b){b.classList.remove('on');} });
+  updateClProg();
+}
+function restoreChecks(checks){
+  CHECKS.forEach(k=>{ D.checks[k]=!!checks[k]; const b=document.getElementById('cb-'+k); if(b){ D.checks[k]?b.classList.add('on'):b.classList.remove('on'); } });
+  updateClProg();
+}
+
+/* ─── trade form helpers ─── */
+function setSide(s){
+  D.side=D.side===s?'':s;
+  document.getElementById('tbLong').className='tbtn'+(D.side==='LONG'?' on-long':'');
+  document.getElementById('tbShort').className='tbtn'+(D.side==='SHORT'?' on-short':'');
+  autoCalc();
+}
+function setNow(id){ document.getElementById(id).value=isoToday(); }
+function setNowDateTime(dateId,timeId){
+  document.getElementById(dateId).value=isoToday();
+  document.getElementById(timeId).value=nowTime();
+}
+function colorPnl(){
+  const v=+document.getElementById('t-pnl').value;
+  document.getElementById('t-pnl').className='pnl-input'+(v>0?' pos':v<0?' neg':'');
+}
+function popAccSel(){
+  const s=document.getElementById('t-acc');
+  s.innerHTML='<option value="">Select account…</option>';
+  D.accs.forEach(a=>{const o=document.createElement('option');o.value=a.id;o.textContent=a.name;s.appendChild(o);});
+}
+
+function resetTradeForm(){
+  ['t-sym','t-setup','t-notes','t-pnl','t-rr','t-sl','t-fees','t-swap'].forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
+  document.getElementById('t-sym').value='XAUUSD';
+  document.getElementById('t-ed').value=''; document.getElementById('t-et').value='';
+  document.getElementById('t-xd').value=''; document.getElementById('t-xt').value='';
+  document.getElementById('tbLong').className='tbtn'; document.getElementById('tbShort').className='tbtn';
+  document.getElementById('calcPreview').style.display='none';
+  document.getElementById('autoTag').style.display='none';
+  document.getElementById('exec-summary').style.display='none';
+  document.getElementById('t-pnl').className='pnl-input';
+  document.getElementById('discGate').classList.remove('show');
+  // clear image previews
+  ['ltf','htf'].forEach(k=>{
+    const prev=document.getElementById(k+'-preview'); if(prev){prev.style.display='none'; prev.src='';}
+    const lbl=document.getElementById(k+'-lbl'); if(lbl){lbl.textContent='Drop or click to upload '+k.toUpperCase()+' screenshot'; lbl.classList.remove('done');}
+  });
+}
+
+/* ─── image upload ─── */
+function pickFile(id){ document.getElementById(id).click(); }
+function dzDrag(e,el){ e.preventDefault(); el.style.borderColor='rgba(29,233,182,.6)'; }
+function dzLeave(el){ el.style.borderColor=''; }
+function dzDrop(e,fId,dz){
+  e.preventDefault(); dzLeave(dz);
+  const f=e.dataTransfer.files[0]; if(!f||!f.type.startsWith('image/')) return;
+  loadImageFile(f,fId);
+}
+function filePicked(fId,lblId,prevId){
+  const f=document.getElementById(fId).files[0]; if(!f) return;
+  loadImageFile(f,fId);
+}
+function loadImageFile(f,fId){
+  const prefix=fId.startsWith('ltf')?'ltf':'htf';
+  const reader=new FileReader();
+  reader.onload=e=>{
+    if(prefix==='ltf') D.ltfImage=e.target.result;
+    else D.htfImage=e.target.result;
+    showImgPreview(prefix+'-preview',prefix+'-lbl',e.target.result);
+  };
+  reader.readAsDataURL(f);
+}
+function showImgPreview(prevId,lblId,src){
+  const prev=document.getElementById(prevId);
+  const lbl=document.getElementById(lblId);
+  if(prev){ prev.src=src; prev.style.display='block'; }
+  if(lbl){ lbl.textContent='✓ Screenshot loaded'; lbl.classList.add('done'); }
+}
+
+/* ─── executions ─── */
+function addExec(type){ D.execs.push({id:Date.now(),type,price:'',qty:'',fee:''}); renderExecList(); }
+function remExec(id){ D.execs=D.execs.filter(e=>e.id!==id); renderExecList(); autoCalc(); }
+function updExec(id,f,v){ const e=D.execs.find(x=>x.id===id); if(e){e[f]=v; autoCalc();} }
+function renderExecList(){
+  const el=document.getElementById('execList');
+  if(!D.execs.length){
+    el.innerHTML=`<div style="font-size:11.5px;color:var(--t4);padding:9px 11px;background:var(--bg4);border-radius:5px;text-align:center">Use <strong>+ Entry</strong> / <strong>+ Exit</strong> to log fills. P&L auto-calculates.</div>`;
+    document.getElementById('exec-summary').style.display='none'; return;
+  }
+  el.innerHTML=`<div class="etable-wrap"><table class="etable">
+    <thead><tr><th>Type</th><th>Price</th><th>Qty/Lots</th><th>Fee</th><th></th></tr></thead>
+    <tbody>${D.execs.map(e=>`<tr>
+      <td><span class="${e.type==='entry'?'etype-e':'etype-x'}">${e.type}</span></td>
+      <td><input class="ei" type="number" value="${e.price}" placeholder="2350.00" onchange="updExec(${e.id},'price',this.value)" style="width:85px"></td>
+      <td><input class="ei" type="number" value="${e.qty}"   placeholder="0.01"    onchange="updExec(${e.id},'qty',this.value)"   style="width:60px"></td>
+      <td><input class="ei" type="number" value="${e.fee}"   placeholder="0"       onchange="updExec(${e.id},'fee',this.value)"   style="width:45px"></td>
+      <td><button class="edel" onclick="remExec(${e.id})">✕</button></td>
+    </tr>`).join('')}</tbody></table></div>`;
+}
+function autoCalc(){
+  const entries=D.execs.filter(e=>e.type==='entry');
+  const exits=D.execs.filter(e=>e.type==='exit');
+  if(!entries.length||!exits.length){ document.getElementById('calcPreview').style.display='none'; document.getElementById('autoTag').style.display='none'; return; }
+  const avgEp=entries.reduce((s,e)=>s+(+e.price||0),0)/entries.length;
+  const avgXp=exits.reduce((s,e)=>s+(+e.price||0),0)/exits.length;
+  const totalQty=entries.reduce((s,e)=>s+(+e.qty||0),0);
+  const fees=+document.getElementById('t-fees').value||0;
+  const diff=D.side==='SHORT'?avgEp-avgXp:avgXp-avgEp;
+  const pnl=(diff*totalQty)-fees;
+  document.getElementById('t-pnl').value=pnl.toFixed(2);
+  colorPnl();
+  document.getElementById('autoTag').style.display='inline-flex';
+  document.getElementById('calcPreview').style.display='block';
+  document.getElementById('calcFormula').textContent=`(${avgXp.toFixed(2)} − ${avgEp.toFixed(2)}) × ${totalQty} − ${fees} fees`;
+  const rEl=document.getElementById('calcResult');
+  rEl.textContent='= '+fmtPnl(pnl);
+  rEl.className='result '+(pnl>=0?'pos':'neg');
+  const exitQty=exits.reduce((s,e)=>s+(+e.qty||0),0);
+  document.getElementById('exec-summary').style.display='block';
+  document.getElementById('es-ep').textContent=avgEp.toFixed(2);
+  document.getElementById('es-xp').textContent=avgXp.toFixed(2);
+  document.getElementById('es-en').textContent=totalQty;
+  document.getElementById('es-ex').textContent=exitQty;
+}
+
+/* ════════════════════════════════════
+   DASHBOARD
+════════════════════════════════════ */
+function renderDash(){
+  const T=allTrades();
+  const wins=T.filter(t=>t.pnl>0).length;
+  const totalPnl=T.reduce((s,t)=>s+t.pnl,0);
+  const rrs=T.filter(t=>t.rr).map(t=>t.rr);
+  const best=T.length?Math.max(...T.map(t=>t.pnl)):0;
+  const el=id=>document.getElementById(id);
+  el('ds-pnl').textContent=T.length?fmtPnl(totalPnl):'$0';
+  el('ds-pnl').className='d-stat-val '+(totalPnl>=0?'pos':'neg');
+  el('ds-wr').textContent=T.length?Math.round(wins/T.length*100)+'%':'—';
+  el('ds-rr').textContent=rrs.length?(rrs.reduce((a,b)=>a+b,0)/rrs.length).toFixed(2):'—';
+  el('ds-best').textContent=T.length?fmtPnl(best):'—';
+  const scored=T.filter(t=>t.checks);
+  el('ds-disc').textContent=scored.length?Math.round(scored.reduce((s,t)=>s+t.discScore,0)/scored.length)+'%':'—';
+  drawCharts(T);
+}
+
+function drawCharts(T){
+  drawPnlCurve(T); drawWL(T); drawSym(T); drawSides(T);
+}
+function gc(id){
+  const c=document.getElementById(id); if(!c) return null;
+  const dpr=window.devicePixelRatio||1;
+  const w=c.parentElement.clientWidth-34,h=150;
+  c.width=w*dpr; c.height=h*dpr; c.style.width=w+'px'; c.style.height=h+'px';
+  const ctx=c.getContext('2d'); ctx.scale(dpr,dpr); ctx.clearRect(0,0,w,h);
+  return{ctx,w,h};
+}
+function noData(ctx,w,h){ ctx.fillStyle='#3a3a4a'; ctx.font='11px Inter'; ctx.textAlign='center'; ctx.fillText('Add more trades',w/2,h/2); }
+function rrect(ctx,x,y,w,h,r){ if(h<=0) return; ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.arcTo(x+w,y,x+w,y+r,r); ctx.lineTo(x+w,y+h-r); ctx.arcTo(x+w,y+h,x+w-r,y+h,r); ctx.lineTo(x+r,y+h); ctx.arcTo(x,y+h,x,y+h-r,r); ctx.lineTo(x,y+r); ctx.arcTo(x,y,x+r,y,r); ctx.closePath(); }
+function drawPnlCurve(T){
+  const r=gc('cPnl'); if(!r) return; const{ctx,w,h}=r;
+  const sorted=[...T].sort((a,b)=>(a.entryDate||'').localeCompare(b.entryDate||''));
+  if(!sorted.length){noData(ctx,w,h);return;}
+  let cum=0; const pts=sorted.map(t=>{cum+=t.pnl;return cum;});
+  const mn=Math.min(0,...pts),mx=Math.max(0,...pts),range=mx-mn||1;
+  const sx=(w-24)/(pts.length-1||1),sy=(h-24)/range;
+  const py=v=>h-12-(v-mn)*sy;
+  const g=ctx.createLinearGradient(0,0,0,h);
+  g.addColorStop(0,'rgba(29,233,182,.3)'); g.addColorStop(1,'rgba(29,233,182,0)');
+  ctx.beginPath(); pts.forEach((v,i)=>{ const x=12+i*sx; i===0?ctx.moveTo(x,py(v)):ctx.lineTo(x,py(v)); });
+  ctx.lineTo(12+(pts.length-1)*sx,h-12); ctx.lineTo(12,h-12); ctx.closePath(); ctx.fillStyle=g; ctx.fill();
+  ctx.beginPath(); pts.forEach((v,i)=>{ const x=12+i*sx; i===0?ctx.moveTo(x,py(v)):ctx.lineTo(x,py(v)); });
+  ctx.strokeStyle='#1de9b6'; ctx.lineWidth=2; ctx.stroke();
+}
+function drawWL(T){
+  const r=gc('cWL'); if(!r) return; const{ctx,w,h}=r;
+  const wins=T.filter(t=>t.pnl>0).length,tot=T.length;
+  if(!tot){noData(ctx,w,h);return;}
+  const cx=w/2-20,cy=h/2,rad=52,wA=(wins/tot)*Math.PI*2;
+  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,rad,-Math.PI/2,-Math.PI/2+wA); ctx.closePath(); ctx.fillStyle='rgba(29,233,182,.8)'; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,rad,-Math.PI/2+wA,Math.PI*1.5); ctx.closePath(); ctx.fillStyle='rgba(255,61,107,.7)'; ctx.fill();
+  ctx.beginPath(); ctx.arc(cx,cy,28,0,Math.PI*2); ctx.fillStyle='#18181b'; ctx.fill();
+  ctx.fillStyle='#f4f4f6'; ctx.font='bold 12px JetBrains Mono'; ctx.textAlign='center'; ctx.fillText(wins+'/'+tot,cx,cy+5);
+  const lx=cx+rad+10;
+  ctx.fillStyle='rgba(29,233,182,.8)'; ctx.fillRect(lx,cy-22,9,9); ctx.fillStyle='#a1a1b5'; ctx.font='11px Inter'; ctx.textAlign='left'; ctx.fillText('Wins('+wins+')',lx+12,cy-14);
+  ctx.fillStyle='rgba(255,61,107,.7)'; ctx.fillRect(lx,cy-6,9,9); ctx.fillStyle='#a1a1b5'; ctx.fillText('Loss('+(tot-wins)+')',lx+12,cy+2);
+}
+function drawSym(T){
+  const r=gc('cSym'); if(!r) return; const{ctx,w,h}=r;
+  const map={}; T.forEach(t=>map[t.symbol]=(map[t.symbol]||0)+1);
+  const sorted=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  if(!sorted.length){noData(ctx,w,h);return;}
+  const mx=Math.max(...sorted.map(x=>x[1]));
+  const bw=Math.floor((w-32)/sorted.length)-6;
+  sorted.forEach(([sym,cnt],i)=>{
+    const bh=(cnt/mx)*(h-44); const x=16+i*((w-32)/sorted.length); const y=h-22-bh;
+    ctx.fillStyle='rgba(245,158,11,.65)'; ctx.beginPath(); rrect(ctx,x,y,bw,bh,3); ctx.fill();
+    ctx.fillStyle='#5c5c72'; ctx.font='9.5px JetBrains Mono'; ctx.textAlign='center'; ctx.fillText(sym.slice(0,6),x+bw/2,h-6);
+    ctx.fillStyle='#f4f4f6'; ctx.font='bold 10.5px JetBrains Mono'; ctx.fillText(cnt,x+bw/2,y-4);
+  });
+}
+function drawSides(T){
+  const r=gc('cSide'); if(!r) return; const{ctx,w,h}=r;
+  const lp=T.filter(t=>t.side==='LONG').reduce((s,t)=>s+t.pnl,0);
+  const sp=T.filter(t=>t.side==='SHORT').reduce((s,t)=>s+t.pnl,0);
+  if(!T.length){noData(ctx,w,h);return;}
+  const mx=Math.max(Math.abs(lp),Math.abs(sp),1),mid=90,bw=52;
+  ctx.strokeStyle='rgba(255,255,255,.05)'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(0,mid); ctx.lineTo(w,mid); ctx.stroke();
+  const db=(x,val,lbl)=>{
+    const bh=(Math.abs(val)/mx)*62; const y=val>=0?mid-bh:mid;
+    ctx.fillStyle=val>=0?'rgba(29,233,182,.7)':'rgba(255,61,107,.65)';
+    ctx.beginPath(); rrect(ctx,x,val?y:mid,bw,bh||2,3); ctx.fill();
+    ctx.fillStyle='#5c5c72'; ctx.font='10px JetBrains Mono'; ctx.textAlign='center'; ctx.fillText(lbl,x+bw/2,h-4);
+    ctx.fillStyle=val>=0?'#1de9b6':'#ff3d6b'; ctx.font='bold 10px JetBrains Mono'; ctx.fillText(fmtPnl(val),x+bw/2,val>=0?y-5:y+bh+13);
+  };
+  db(w/2-bw-12,lp,'LONG'); db(w/2+12,sp,'SHORT');
+}
+
+/* ════════════════════════════════════
+   LEAK MAP
+════════════════════════════════════ */
+function renderLeakMap(){
+  const T=allTrades();
+  const el=document.getElementById('leakContent');
+  if(T.length<3){el.innerHTML=`<div class="empty"><div class="empty-icon">🔍</div><div class="empty-title">Not enough data</div><div class="empty-sub">Log at least 3 trades.</div></div>`;return;}
+  const bySide={},bySess={},bySym={};
+  T.forEach(t=>{
+    if(t.side) bySide[t.side]=(bySide[t.side]||0)+t.pnl;
+    (t.sessions||[]).forEach(s=>bySess[s]=(bySess[s]||0)+t.pnl);
+    bySym[t.symbol]=(bySym[t.symbol]||0)+t.pnl;
+  });
+  const ws=Object.entries(bySide).sort((a,b)=>a[1]-b[1])[0];
+  const wss=Object.entries(bySess).sort((a,b)=>a[1]-b[1])[0];
+  const wsym=Object.entries(bySym).sort((a,b)=>a[1]-b[1])[0];
+  const allSc=T.filter(t=>t.checks);
+  let worstR='—',worstP=100;
+  CHECKS.forEach(k=>{const p=allSc.length?Math.round(allSc.filter(t=>t.checks[k]).length/allSc.length*100):100;if(p<worstP){worstP=p;worstR=k;}});
+  el.innerHTML=`<div class="leak-cards">
+    <div class="leak-card"><div class="lc-lbl">Worst Side</div><div class="lc-val">${ws?ws[0]:'—'}</div><div class="lc-sub">${ws?fmtPnl(ws[1]):'No data'}</div></div>
+    <div class="leak-card"><div class="lc-lbl">Worst Session</div><div class="lc-val">${wss?wss[0].replace(/[^\w\s\-]/g,'').trim():'—'}</div><div class="lc-sub">${wss?fmtPnl(wss[1]):'No data'}</div></div>
+    <div class="leak-card"><div class="lc-lbl">Worst Symbol</div><div class="lc-val">${wsym?wsym[0]:'—'}</div><div class="lc-sub">${wsym?fmtPnl(wsym[1]):'No data'}</div></div>
+    <div class="leak-card" style="border-left-color:var(--gold)"><div class="lc-lbl" style="color:var(--gold)">Worst Disc. Rule</div><div class="lc-val" style="color:var(--gold)">${worstR!=='—'?RULE_LABELS[worstR]||worstR:'—'}</div><div class="lc-sub">${worstR!=='—'?worstP+'% adherence':'No scored trades'}</div></div>
+  </div>`;
+}
+
+/* ════════════════════════════════════
+   ACCOUNTS
+════════════════════════════════════ */
+function setAccMode(m){
+  D.accMode=m;
+  ['live','demo','bt'].forEach(k=>document.getElementById('m-'+k).className='tbtn'+({live:'Live',demo:'Demo',bt:'Backtest'}[k]===m?' on-sel':''));
+}
+function setAccType(t){
+  D.accType=t;
+  document.getElementById('at-personal').className='atype'+(t==='Personal'?' on':'');
+  document.getElementById('at-prop').className='atype'+(t==='Prop Firm'?' on':'');
+  document.getElementById('propFields').style.display=t==='Prop Firm'?'block':'none';
+}
+D.accMode='Live'; D.accType='Personal';
+function saveAcc(){
+  const name=document.getElementById('a-name').value.trim(); if(!name){toast('Enter account name','err');return;}
+  D.accs.push({id:Date.now(),name,mode:D.accMode||'Live',type:D.accType||'Personal',
+    balance:+document.getElementById('a-bal').value||10000,
+    target:+document.getElementById('a-tgt').value||11000,
+    dailyDD:+document.getElementById('a-ddd').value||null,
+    maxDD:+document.getElementById('a-mdd').value||null});
+  save(); hide('mAcc'); renderAccPage(); toast('✓ Account saved');
+}
+function delAcc(id){
+  if(!confirm('Delete this account?')) return;
+  D.accs=D.accs.filter(a=>a.id!==id); save(); renderAccPage();
+}
+function renderAccPage(){
+  const el=document.getElementById('accPageGrid');
+  if(!D.accs.length){el.innerHTML=`<div class="empty"><div class="empty-icon">🏦</div><div class="empty-title">No accounts</div><div class="empty-sub">Click "+ Account" to add one.</div></div>`;return;}
+  el.innerHTML=D.accs.map(a=>{
+    const trades=allTrades().filter(t=>t.accountId===String(a.id));
+    const pnl=trades.reduce((s,t)=>s+t.pnl,0);
+    const pct=Math.min(100,Math.max(0,((a.balance+pnl-a.balance)/(a.target-a.balance)*100)||0));
+    return `<div class="acc-full">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-size:14px;font-weight:700">${a.name}</div>
+        <button class="btn sm danger" onclick="delAcc(${a.id})">Remove</button>
+      </div>
+      <div style="font-size:11.5px;color:var(--t3);margin-bottom:10px">${a.mode} · ${a.type}</div>
+      <div class="dd-grid">
+        <div class="dd-box"><div class="dd-lbl">Balance</div><div class="dd-val">$${a.balance.toLocaleString()}</div></div>
+        <div class="dd-box"><div class="dd-lbl">P&L</div><div class="dd-val" style="color:${pnl>=0?'var(--g)':'var(--r)'}">${fmtPnl(pnl)}</div></div>
+        <div class="dd-box"><div class="dd-lbl">Trades</div><div class="dd-val">${trades.length}</div></div>
+        <div class="dd-box"><div class="dd-lbl">Target</div><div class="dd-val">$${a.target.toLocaleString()}</div></div>
+      </div>
+      <div class="prog-label"><span>Target Progress</span><span>${pct.toFixed(1)}%</span></div>
+      <div class="prog"><div class="prog-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+/* ════════════════════════════════════
+   REVIEW SNAPSHOT
+════════════════════════════════════ */
+function renderReviewSnapshot(){
+  const T = allTrades();
+  const total   = T.length;
+  const winners = T.filter(t => t.pnl > 0).length;
+  const losers  = T.filter(t => t.pnl < 0).length;
+  const netPnl  = T.reduce((s,t) => s + t.pnl, 0);
+  const wr      = total ? (winners / total * 100).toFixed(1) : '0.0';
+
+  // pending = trades with discScore < 100 or not reviewed
+  const pending  = T.filter(t => !t.reviewed).length;
+  const reviewed = T.filter(t =>  t.reviewed).length;
+
+  // "followed plan" = trades where discScore >= 80
+  const followed = T.filter(t => t.discScore >= 80).length;
+  const followPct = total ? Math.round(followed / total * 100) : 0;
+
+  // top mistake = the discipline rule failed most across all trades
+  const allSc = T.filter(t => t.checks);
+  let topMistake = 'No mistakes tagged';
+  if(allSc.length){
+    let worstKey = '', worstPct = 101;
+    CHECKS.forEach(k => {
+      const pct = Math.round(allSc.filter(t => t.checks[k]).length / allSc.length * 100);
+      if(pct < worstPct){ worstPct = pct; worstKey = k; }
+    });
+    if(worstKey && worstPct < 100) topMistake = RULE_LABELS[worstKey] + ' (' + (100 - worstPct) + '% miss)';
+  }
+
+  // update DOM
+  const $ = id => document.getElementById(id);
+  $('rs-pending').textContent  = pending + ' pending';
+  $('rs-reviewed').textContent = reviewed + ' reviewed';
+  $('rs-plan').textContent     = 'Followed plan ' + followPct + '%';
+  $('rs-mistake').textContent  = 'Top mistake ' + topMistake;
+  $('rs-closed').textContent   = total + ' closed trade' + (total !== 1 ? 's' : '');
+
+  const pnlEl = $('rs-pnl');
+  pnlEl.textContent  = (netPnl >= 0 ? '+' : '-') + '$' + Math.abs(netPnl).toFixed(2);
+  pnlEl.className    = 'rs-stat-val ' + (netPnl > 0 ? 'green' : netPnl < 0 ? 'red' : 'neutral');
+  $('rs-trades').textContent  = total;
+  $('rs-winners').textContent = winners;
+  $('rs-losers').textContent  = losers;
+  $('rs-wr').textContent      = wr + '%';
+}
+
+function nextToReview(){
+  // Find the oldest trade that hasn't been reviewed yet
+  const allT = D.sessions.flatMap(s => (s.trades||[]).map(t => ({...t, sessId: s.id})));
+  const unreviewed = allT.filter(t => !t.reviewed).sort((a,b) => (a.entryDate||'').localeCompare(b.entryDate||''));
+  if(!unreviewed.length){ toast('All trades reviewed! ✓'); return; }
+  const next = unreviewed[0];
+  // expand that session card and open the trade
+  const sess = D.sessions.find(s => s.id === next.sessId);
+  if(!sess) return;
+  // ensure session card is expanded
+  const body = document.getElementById('sdc-body-' + sess.id);
+  const chev = document.getElementById('sdc-chev-' + sess.id);
+  const card = document.getElementById('sdc-' + sess.id);
+  if(body && !body.classList.contains('open')){
+    body.classList.add('open');
+    if(chev) chev.classList.add('open');
+    if(card) card.classList.add('open');
+    body.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+  setTimeout(() => openTradeModal(next.sessId, next.id), 320);
+}
+
+function openAICoach(){
+  const T = allTrades();
+  const countEl = document.getElementById('aiTradeCount');
+  if(countEl) countEl.textContent = T.length;
+  show('mAICoach');
+  renderAICoach();
+}
+
+function renderAICoach(){
+  const T = allTrades();
+  const container = document.getElementById('aiCoachContent');
+  if(!T.length){
+    container.innerHTML = '<div style="text-align:center;padding:28px;color:var(--t3);font-size:13px">Log at least one trade to get AI coaching insights.</div>';
+    return;
+  }
+  container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--t3);font-size:13px;display:flex;flex-direction:column;align-items:center;gap:10px"><div style="font-size:24px;animation:spin 1.2s linear infinite">⬡</div><div>Analyzing your trades…</div></div>';
+
+  const scored = T.filter(t => t.checks);
+  const wins = T.filter(t => t.pnl > 0).length;
+  const wr = T.length ? Math.round(wins / T.length * 100) : 0;
+  const netPnl = T.reduce((s,t) => s + t.pnl, 0);
+  const avgDisc = scored.length ? Math.round(scored.reduce((s,t) => s + t.discScore, 0) / scored.length) : 0;
+  const rrs = T.filter(t => t.rr).map(t => t.rr);
+  const avgRR = rrs.length ? (rrs.reduce((a,b) => a+b, 0) / rrs.length).toFixed(2) : 'N/A';
+  const worstRules = CHECKS.map(k => {
+    const pct = scored.length ? Math.round(scored.filter(t => t.checks[k]).length / scored.length * 100) : 100;
+    return {k, pct, label: RULE_LABELS[k]};
+  }).sort((a,b) => a.pct - b.pct).slice(0,3);
+
+  setTimeout(() => {
+    const insights = buildInsights(T, wins, wr, netPnl, avgDisc, avgRR, worstRules);
+    container.innerHTML = insights;
+  }, 800);
+}
+
+function buildInsights(T, wins, wr, netPnl, avgDisc, avgRR, worstRules){
+  const scored = T.filter(t => t.checks);
+  const longTrades  = T.filter(t => t.side === 'LONG');
+  const shortTrades = T.filter(t => t.side === 'SHORT');
+  const longPnl  = longTrades.reduce((s,t) => s + t.pnl, 0);
+  const shortPnl = shortTrades.reduce((s,t) => s + t.pnl, 0);
+  const bestSide = longPnl >= shortPnl ? 'Long' : 'Short';
+  const worstSide = longPnl < shortPnl ? 'Long' : 'Short';
+  const worstSidePnl = Math.min(longPnl, shortPnl).toFixed(2);
+
+  const items = [];
+
+  // Discipline insight
+  if(avgDisc < 60){
+    items.push({icon:'🔴', title:'Discipline is your #1 issue', body:`Your average checklist score is <strong>${avgDisc}%</strong>. Trades taken below 80% discipline have a significantly lower expected value. Focus on completing the full checklist before every entry.`});
+  } else if(avgDisc < 80){
+    items.push({icon:'🟡', title:'Discipline improving but gaps remain', body:`You're averaging <strong>${avgDisc}%</strong> checklist compliance. Close the gap — 80%+ discipline typically correlates with higher win rate on XAUUSD.`});
+  } else {
+    items.push({icon:'🟢', title:'Discipline is strong', body:`Excellent — <strong>${avgDisc}%</strong> average checklist score. Maintain this standard and your edge compounds over time.`});
+  }
+
+  // Win rate
+  if(wr < 40){
+    items.push({icon:'⚠️', title:'Win rate is low', body:`At <strong>${wr}%</strong> win rate, you need a minimum 1:2.5 RR to be profitable. Review your entry triggers — are you entering before BOS/CHoCH confirmation?`});
+  } else if(wr >= 60){
+    items.push({icon:'✅', title:'Win rate is healthy', body:`<strong>${wr}%</strong> win rate on ${T.length} trades. Keep qualifying setups with your discipline checklist to maintain edge.`});
+  }
+
+  // Worst missed rules
+  if(worstRules.length && worstRules[0].pct < 80){
+    items.push({icon:'📋', title:'Most frequently broken rules', body: worstRules.filter(r=>r.pct<100).map((r,i)=>`<span style="color:var(--r)">${i+1}. ${r.label} — missed ${100-r.pct}% of the time</span>`).join('<br>')});
+  }
+
+  // Side bias
+  if(T.length >= 4 && Math.abs(longPnl - shortPnl) > 20){
+    items.push({icon:'↕️', title:`${worstSide} trades are your leak`, body:`Your ${worstSide.toLowerCase()} trades are producing <strong style="color:var(--r)">$${Math.abs(+worstSidePnl).toFixed(2)}</strong> in losses. Consider reducing size or increasing confirmation requirements for ${worstSide.toLowerCase()} entries on XAUUSD.`});
+  }
+
+  // RR
+  if(avgRR !== 'N/A' && +avgRR < 2){
+    items.push({icon:'⊙', title:'Average RR below 2:1 target', body:`Your average achieved RR is <strong>${avgRR}</strong>. Your strategy requires minimum 1:2. Are you closing trades too early? Let winners run to your original TP.`});
+  }
+
+  // Gold-specific
+  const killzoneScore = scored.length ? Math.round(scored.filter(t=>t.checks['killzone']).length / scored.length * 100) : null;
+  if(killzoneScore !== null && killzoneScore < 80){
+    items.push({icon:'🔶', title:'Kill Zone Filter often missed', body:`Only <strong>${killzoneScore}%</strong> of your trades enter during NY Open or Overlap kill zones. XAUUSD traps late entries aggressively. This single filter could significantly reduce false entries.`});
+  }
+
+  if(!items.length) items.push({icon:'🏆', title:'Strategy looks solid', body:'Keep logging trades consistently. More data will surface deeper patterns in your performance.'});
+
+  return items.map(it => `
+    <div style="background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad2);padding:14px 16px;margin-bottom:10px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;">
+        <span style="font-size:15px">${it.icon}</span>
+        <span style="font-size:13px;font-weight:700">${it.title}</span>
+      </div>
+      <div style="font-size:12.5px;color:var(--t2);line-height:1.6">${it.body}</div>
+    </div>`).join('');
+}
+
+/* ─── mark trade reviewed (called inside session row) ─── */
+function markReviewed(sessId, tradeId, e){
+  e.stopPropagation();
+  const sess = D.sessions.find(s => s.id === sessId);
+  if(!sess) return;
+  const trade = (sess.trades||[]).find(t => t.id === tradeId);
+  if(!trade) return;
+  trade.reviewed = !trade.reviewed;
+  save(); renderJournal(); renderReviewSnapshot();
+  toast(trade.reviewed ? '✓ Marked as reviewed' : 'Marked as pending');
+}
+
+/* ─── INIT ─── */
+renderJournal();
+loadMySqlTrades();
+</script>
+</body>
+</html>
