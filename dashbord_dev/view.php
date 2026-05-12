@@ -15,7 +15,7 @@
   </div>
 </nav>
 <div>
-  add some text to the dashbord in the dev branch
+  this is the content of the dashboard page in the master branch
 </div>
 <div>
   testing the git stash command
