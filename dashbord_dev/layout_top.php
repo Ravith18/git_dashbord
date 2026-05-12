@@ -38,3 +38,8 @@
   <span class="chip"><span class="dot"></span>1% Risk · 1:2 RR</span>
   <span class="chip"><span class="dot off"></span>Sessions: <span id="tbCount" style="font-weight:700;margin-left:3px">0</span></span>
 </div>
+
+
+<div>
+    testing the git stash command in the development branch
+</div>
