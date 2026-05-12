@@ -20,3 +20,6 @@
 <div>
   testing the git stash command
 </div>
+<div>
+  testing the git stash apply command in the development branch
+</div>
