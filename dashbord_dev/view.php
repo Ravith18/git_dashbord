@@ -17,3 +17,6 @@
 <div>
   add some text to the dashbord in the dev branch(2)
 </div>
+<div>
+  testing the git stash command
+</div>
